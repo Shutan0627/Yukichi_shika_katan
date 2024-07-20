@@ -5,7 +5,7 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 def create_feedback(formatted_output, comment):
     client = OpenAI(api_key=OPENAI_API_KEY)
-    comments = "\n".join([f"[{int(c[0])} : {c[1]}] {c[2]}" for c in comment])
+    comments = "\n".join([f"[{c[0]} : {c[1]}] {c[2]}" for c in comment])
 
     content = (
         "<スライド発表練習の評価>\n",
