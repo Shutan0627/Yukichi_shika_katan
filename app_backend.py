@@ -143,5 +143,5 @@ def make_comment_for_streaming(path):
 
 
 
-# print(make_comment_for_streaming("/Users/siga6/Downloads/ムービー（2024-07-20 16.37）.mp4"))
+#print(make_comment_for_streaming("/Users/siga6/Downloads/ムービー（2024-07-20 16.37）.mp4"))
 
