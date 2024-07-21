@@ -30,7 +30,9 @@ def make_comment_for_streaming(path):
 
         for wpmdata in wpm_list:
             if wpmdata[2] > threshold:
-                comment.append([f"{wpmdata[0]:.2f}", "wpm", "話す速度：速すぎる"])
+                comment.append([f"{wpmdata[0]:.2f}", "wpm", "fast"])
+            else:
+                comment.append([f"{wpmdata[0]:.2f}", "wpm", "appropriate"])
         return comment
 
     def make_comment_from_pitch(path):
@@ -47,7 +49,9 @@ def make_comment_for_streaming(path):
         comment = []
         for pitchdata in pitch_list:
             if pitchdata[2] == False:
-                comment.append([f"{pitchdata[0]:.2f}", "pitch", "抑揚：なし"])
+                comment.append([f"{pitchdata[0]:.2f}", "pitch", "false"])
+            else:
+                comment.append([f"{pitchdata[0]:.2f}", "pitch", "true"])
         return comment
 
     def make_comment_from_eye(path):
@@ -101,7 +105,7 @@ def make_comment_for_streaming(path):
 
     # コメントを生成
     data = generate_comments(path)
-    csv_file_path = './references/output.csv'
+    csv_file_path = './data/output.csv'
 
     with open(csv_file_path, mode='w', newline='',encoding='utf-8') as file:
         writer = csv.writer(file)
@@ -109,9 +113,15 @@ def make_comment_for_streaming(path):
 
         for idx, (time, category, comment) in enumerate(data):
             if category == "wpm":
-                comment = random.choice(["もっと抑揚欲しい（´_ゝ｀）", "眠いZzz…(*´～`*)", "退屈ー(ノД`)・゜。"])
+                if comment == "fast":
+                    comment = random.choice(["もっとゆっくり話して欲しいかも(´・ω・`)", "着いていけなくなったかも（´。＿。｀）", "置いていかれた→待ってー!","私を置いていかないで(´；ω；`)"])
+                else:
+                    comment = random.choice(["テンション上がってきた！！", "この速さがちょうどいいかも！(・ω・)", "この速さでいいと思います-_-b", "♫", "聞きやすいなあ"])
             if category == "pitch":
-                comment = random.choice(["もっとゆっくり話して欲しいかも(´・ω・`)", "着いていけなくなったかも（´。＿。｀）", "置いていかれた→待ってー!","私を置いていかないで(´；ω；`)"])
+                if comment == "false":
+                    comment = random.choice(["もっと抑揚欲しい（´_ゝ｀）", "眠いZzz…(*´～`*)", "退屈ー(ノД`)・゜。"])
+                else:
+                    comment = random.choice(["抑揚があっていい感じですね(´・ω・`)", "聞いてて飽きないですね！", "抑揚があると楽しいですね(´・ω・`)", "抑揚があると聞いてて楽しいですね！"])
             if category == "eye":
                 comment = random.choice(["目線が安定してない(・_・;)", "目が合わない(´・ω・`)", "こっち見て！", "目が合わないと不安ヾ(･ω･`;)ﾉ", "こっちみてーー！！"])
 
