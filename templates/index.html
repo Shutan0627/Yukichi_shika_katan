@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="../static/stylesheet.css">
+    </head>
+    <body>
+
+        <div class="left-wrapper">
+            <div class="logo">
+                <img class="left-logo" src="../static/images/logo.png">
+                <img class="bar" src="../static/images/copyrightbar.png">
+            </div>
+            <div class="video">
+                <div id="video-container">
+                    <video id="video"></video>
+                    <input type="file" id="file-input" accept="video/*">
+                    <label for="file-input" id="upload-label">動画を選択</label>
+                    <div id="video-controls">
+                        <button id="play-pause">▶️</button>
+                        <button id="mute-unmute">🔊</button>
+                        <input type="range" id="seek-bar" value="0">
+                    </div>
+                </div>
+
+                <script>
+                    const fileInput = document.getElementById('file-input');
+                    const video = document.getElementById('video');
+                    const videoContainer = document.getElementById('video-container');
+                    const videoControls = document.getElementById('video-controls');
+                    const playPauseButton = document.getElementById('play-pause');
+                    const muteUnmuteButton = document.getElementById('mute-unmute');
+                    const seekBar = document.getElementById('seek-bar');
+                    const uploadLabel = document.getElementById('upload-label');
+
+                    fileInput.addEventListener('change', (event) => {
+                        const file = event.target.files[0];
+                        if (file) {
+                            const fileURL = URL.createObjectURL(file);
+
+                            video.src = fileURL;
+                            video.style.display = 'block';
+                            videoControls.style.display = 'flex';  // シークバーを表示する
+                            uploadLabel.style.display = 'none';  // アップロードラベルを非表示にする
+                            videoContainer.style.border = 'none';  // 枠線を非表示にする
+                        }
+                    });
+
+                    playPauseButton.addEventListener('click', () => {
+                        if (video.paused || video.ended) {
+                            video.play();
+                            playPauseButton.textContent = '⏸️';
+                        } else {
+                            video.pause();
+                            playPauseButton.textContent = '▶️';
+                        }
+                    });
+
+                    muteUnmuteButton.addEventListener('click', () => {
+                        video.muted = !video.muted;
+                        muteUnmuteButton.textContent = video.muted ? '🔇' : '🔊';
+                    });
+
+                    video.addEventListener('timeupdate', () => {
+                        seekBar.value = (video.currentTime / video.duration) * 100;
+                    });
+
+                    seekBar.addEventListener('input', () => {
+                        video.currentTime = (seekBar.value / 100) * video.duration;
+                    });
+                </script>
+            </div>
+            <div class="gpt-review">
+                <p class="gpt-comment">コメント</p>
+                <p id="gpt-review"></p>
+            </div>
+
+        </div>
+        
+
+
+        <div class="right-wrapper">
+            <div class="commentsicon-wrapper">
+                <p>ライブチャット</p>
+
+                <div class="comment-set hidden" id="comment1-set">
+                    <!-- <div class="icon">
+                        <img src="../static/images/Ellipse 13.png">
+                    </div> -->
+                    <div class="comment-wrapper">
+                        <div class="comment">
+                            <p id="comment1">...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="comment-set hidden" id="comment2-set">
+                    <!-- <div class="icon">
+                        <img src="../static/images/Ellipse 13.png">
+                    </div> -->
+                    <div class="comment-wrapper">
+                        <div class="comment">
+                            <p id="comment2">...</p>
+                            
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="comment-set  hidden" id="comment3-set">
+                    <!-- <div class="icon">
+                        <img src="../static/images/Ellipse 13.png">
+                    </div> -->
+                    <div class="comment-wrapper">
+                        <div class="comment">
+                            <p id="comment3">...</p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="comment-set hidden" id="comment4-set">
+                    <!-- <div class="icon">
+                        <img src="../static/images/Ellipse 13.png">
+                    </div> -->
+                    <div class="comment-wrapper">
+                        <div class="comment">
+                            <p id="comment4">...</p>
+                            
+                        </div>
+                    </div>
+
+                </div>
+                <div class="comment-set hidden" id="comment5-set">
+                    <!-- <div class="icon">
+                        <img src="../static/images/Ellipse 13.png">
+                    </div> -->
+                    <div class="comment-wrapper">
+                        <div class="comment">
+                            <p id="comment5">...</p>
+                            
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="comment-set hidden" id="comment6-set">
+                    <!-- <div class="icon">
+                        <img src="../static/images/Ellipse 13.png">
+                    </div> -->
+                    <div class="comment-wrapper">
+                        <div class="comment">
+                            <p id="comment6">...</p>
+                            
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="comment-set hidden" id="comment7-set">
+                    <!-- <div class="icon">
+                        <img src="../static/images/Ellipse 13.png">
+                    </div> -->
+                    <div class="comment-wrapper">
+                        <div class="comment">
+                            <p id="comment7">...</p>
+                            
+                        </div>
+                    </div>
+
+                </div>
+
+
+
+            </div>
+        </div>
+        <script>
+
+            function fetchData() {
+
+                fetch('/data', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(video.currentTime),
+                })
+                .then(response => response.json())
+                .then(data => {
+
+                    var gpt_review = data.gpt_review;
+                    // var html_content = marked.parse(gpt_review);
+                    var elem_gpt = document.getElementById("gpt-review");
+                    var cleaned_review = gpt_review.replace(/^\d+\s/, '').replace(/\sName: comment, dtype: object$/, '');
+                    // elem_gpt.innerHTML = html_content;
+                    elem_gpt.innerHTML = cleaned_review;
+
+                    // var match = gpt_review.match(/総評: \d+点/);
+                    // if (match) {
+                    //     elem_gpt.innerHTML = match[0];
+                    // } else {
+                    //     elem_gpt.innerHTML = "データが見つかりませんでした";
+                    // }
+
+                    var type1 = data.type1;
+                    var comment1 = data.time1 + data.comment1;
+                    var elem1 = document.getElementById("comment7");
+                    var elem1Container = document.getElementById("comment7-set");
+                    elem1.innerHTML = comment1;
+                    if (data.comment1) {
+                        elem1Container.classList.remove("hidden");
+                    }
+
+                    var type2 = data.type2;
+                    var comment2 = data.time2 + data.comment2;
+                    var elem2 = document.getElementById("comment6");
+                    var elem2Container = document.getElementById("comment6-set");
+                    elem2.innerHTML = comment2;
+                    
+                    if (data.comment2) {
+                        elem2Container.classList.remove("hidden");
+                    }
+                    // if (comment2) {
+                    //     document.getElementById("comment2-set").style.display = "block";
+                    // }
+
+                    var type3 = data.type3;
+                    var comment3 = data.time3 + data.comment3;
+                    var elem3 = document.getElementById("comment5");
+                    var elem3Container = document.getElementById("comment5-set");
+                    elem3.innerHTML = comment3;
+                    if (data.comment3) {
+                        elem3Container.classList.remove("hidden");
+                    }
+                    // if (comment3) {
+                    //     document.getElementById("comment3-set").style.display = "block";
+                    // }
+
+                    var type4 = data.type4;
+                    var comment4 = data.time4 + data.comment4;
+                    var elem4 = document.getElementById("comment4");
+                    var elem4Container = document.getElementById("comment4-set");
+                    elem4.innerHTML = comment4;
+                    if (data.comment4) {
+                        elem4Container.classList.remove("hidden");
+                    }
+                    // if (comment4) {
+                    //     document.getElementById("comment4-set").style.display = "block";
+                    // }
+
+                    var type5 = data.type5;
+                    var comment5 = data.time5 + data.comment5;
+                    var elem5 = document.getElementById("comment3");
+                    var elem5Container = document.getElementById("comment3-set");
+                    elem5.innerHTML = comment5;
+                    if (data.comment5) {
+                        elem5Container.classList.remove("hidden");
+                    }
+
+                    var type6 = data.type6;
+                    var comment6 = data.time6 + data.comment6;
+                    var elem6 = document.getElementById("comment2");
+                    var elem6Container = document.getElementById("comment2-set");
+                    elem6.innerHTML = comment6;
+                    if (data.comment6) {
+                        elem6Container.classList.remove("hidden");
+                    }
+
+
+                    var type7 = data.type7;
+                    var comment7 = data.time7 + data.comment7;
+                    var elem7 = document.getElementById("comment1");
+                    var elem7Container = document.getElementById("comment1-set");
+                    elem7.innerHTML = comment7;
+                    if (data.comment7) {
+                        elem7Container.classList.remove("hidden");
+                    }
+                    // if (comment4) {
+                    //     document.getElementById("comment4-set").style.display = "block";
+                    // }
+
+                    // tm = (tm + 1) % 51;
+
+                }
+
+                )
+            }
+            fetchData();
+            setInterval(fetchData, 1000);
+        </script>
+    </body>
+</html>
